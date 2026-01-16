@@ -24,9 +24,14 @@ function secrets() {
     }
     
     function _source_secrets() {
-        local file
-        {source $file} 3<> ${file::==(gpg -q --decrypt "$secret_filename" 2>/dev/null)}
-        export SESSION_SECRETS=true
+        local decrypted_content=$(gpg -q --decrypt "$secret_filename" 2>/dev/null)
+        if [[ $? -eq 0 ]]; then
+            eval "$decrypted_content"
+            export SESSION_SECRETS=true
+        else
+            echo "Failed to decrypt $secret_name"
+            return 1
+        fi
     }
     
     function _decrypt() {
