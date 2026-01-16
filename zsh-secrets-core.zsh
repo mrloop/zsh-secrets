@@ -45,7 +45,7 @@ function secrets() {
         fi
     }
     
-    function _rm() {
+    function __secrets_rm_internal() {
         if [[ -f "$secret_filename" ]]; then
             rm "$secret_filename"
             echo "Removed $secret_name"
@@ -67,7 +67,7 @@ function secrets() {
             _encrypt
             ;;
         rm)
-            _rm
+            __secrets_rm_internal
             ;;
         *)
             echo "Unknown subcommand $1. source, decrypt, encrypt or rm must be used"
@@ -76,7 +76,7 @@ function secrets() {
     esac
     
     # Clean up helper functions
-    unfunction _decrypt _source_secrets _rm _decrypt_to_out _realpath 2>/dev/null
+    unfunction _decrypt _source_secrets __secrets_rm_internal _decrypt_to_out _realpath 2>/dev/null
 }
 
 # Completion function
